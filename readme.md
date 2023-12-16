@@ -36,9 +36,15 @@ Choose or create a directory for your project and navigate to it using the termi
 `python manage.py createsuperuser`
 Visit [http://127.0.0.1:8000/admin](http://127.0.0.1:8000/admin) For admin dashboard and login with the created credentials.
 
-### Step 6: Load Data from CSV Files Using a Management Command [Bonus Task]
+### Step 6: Load Data from CSV Files Using a Management Command [Not as Bonus Task but a feature for time being]
 
 We can implement the upload file option but it takes time. First we input file from the user, store in the in memory  process and discard the file.
+
+For download we can use 'csv' library with response as attachment
+```
+response = HttpResponse(content_type='text/csv')
+response['Content-Disposition'] = 'attachment; filename="stock_data.csv"'
+```
 
 But for the time being i  have implemented other way.
 
