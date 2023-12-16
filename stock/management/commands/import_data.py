@@ -2,20 +2,26 @@
 import csv
 from django.core.management.base import BaseCommand
 import re
+import os
 from datetime import datetime
 
 from stock.models import IndexModel, StockModel
 
-
 class Command(BaseCommand):
-    help = 'Import data from CSV file into YourModel'
+    help = 'Import data from CSV files in a folder into YourModel'
 
     def add_arguments(self, parser):
-        parser.add_argument('csv_file', type=str, help='Path to CSV')
+        parser.add_argument('folder_path', type=str, help='Path to the folder containing CSV files')
 
     def handle(self, *args, **options):
-        csv_file = options['csv_file']
-        filename = csv_file.split('/')[-1]
+        folder_path = options['folder_path']
+        for filename in os.listdir(folder_path):
+            if filename.endswith(".csv"):
+                file_path = os.path.join(folder_path, filename)
+                self.import_data_from_file(file_path)
+
+    def import_data_from_file(self, csv_file):
+        filename = os.path.basename(csv_file)
         match = re.match(
             r'(.+)-(\d{2}-\d{2}-\d{4})-to-(\d{2}-\d{2}-\d{4}).csv', filename)
 
@@ -32,7 +38,7 @@ class Command(BaseCommand):
             print(f"End Date: {end_date}")
             # Your logic to read and import data from the CSV file
             index_obj = IndexModel(
-                name=extracted_filename.replace(" ","-"),
+                name=extracted_filename.replace(" ", "-"),
                 start_date=start_date,
                 end_date=end_date,
             )
@@ -55,6 +61,6 @@ class Command(BaseCommand):
                         )
 
             self.stdout.write(self.style.SUCCESS(
-                'Data imported successfully.'))
+                f'Data imported successfully from {filename}.'))
         else:
-            print("Filename does not match the expected pattern.")
+            print(f"Filename {filename} does not match the expected pattern.")

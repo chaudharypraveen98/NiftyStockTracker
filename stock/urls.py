@@ -7,7 +7,7 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 
 # namespace
-app_name = 'stock'
+# app_name = 'stock'
 router.register(r'stock-index', ProductViewset, basename='stock-index')
 
 # urlpatterns = [
